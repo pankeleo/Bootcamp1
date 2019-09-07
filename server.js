@@ -12,7 +12,23 @@ var requestHandler = function(request, response) {
   /*
     Your request handler should send listingData in the JSON format as a response if a GET request 
     is sent to the '/listings' path. Otherwise, it should send a 404 error. 
+  */
 
+  if(request.method != 'GET' || parsedUrl.path != '/listings')
+  {
+    response.writeHead(404, {'Content-Type': 'text/plain'});
+    response.write("Bad gateway error");
+    return response.end();
+  }
+  else
+  {
+    response.writeHead(200, {'Content-Type': 'application/json'});
+    response.write(listingData);
+    return response.end();
+  }
+
+
+/*
     HINT: Explore the request object and its properties 
     HINT: Explore the response object and its properties
     https://code.tutsplus.com/tutorials/http-the-protocol-every-web-developer-must-know-part-1--net-31177
@@ -38,14 +54,23 @@ fs.readFile('listings.json', 'utf8', function(err, data) {
    */
 
     //Check for errors
-  
+    if (err) throw err;
 
-   //Save the sate in the listingData variable already defined
+    //Save the sate in the listingData variable already defined
   
+    listingData =data;
 
   //Creates the server
-  
+  // a server is created, but not started
+  var server = http.createServer(requestHandler);
+
   //Start the server
+
+  // the server is now started, listening for requests on port 8080 - go to your browerd and paste in http://127.0.0.1:8080
+  server.listen(port, function() {
+    //once the server is listening, this callback function is executed
+    console.log('Server listening on: http://127.0.0.1:' + port);
+  });
 
 
 });
